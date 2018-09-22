@@ -16,7 +16,6 @@ include(APPDIR.'views/layouts/errors.php');
     <tr>
         <td><?=htmlentities($contact->name);?></td>
         <td><?=htmlentities($contact->email);?></td>
-        <td><?=htmlentities($contact->tel);?></td>
     </tr>
     </table>
 </div>

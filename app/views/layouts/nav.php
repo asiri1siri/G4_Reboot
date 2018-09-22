@@ -7,13 +7,13 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Project name</a>
+        <a class="navbar-brand" href="#">Inventory Management</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           <li><a href="/">Admin</a></li>
-          <li><a href="/contacts">Contacts</a></li>
           <li><a href="/users">Users</a></li>
+          <li><a href="/items">Items</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="/admin/logout">Logout</a></li>

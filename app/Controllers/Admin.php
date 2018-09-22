@@ -42,19 +42,19 @@ class Admin extends BaseController
 
         if (isset($_POST['submit'])) {
             $username = htmlspecialchars($_POST['username']);
-            $password = htmlspecialchars($_POST['password']);
+//            $password = htmlspecialchars($_POST['password']);
 
-            if (password_verify($password, $this->user->get_hash($username)) == false) {
+/*            if (password_verify($password, $this->user->get_hash($username)) == false) {
                 $errors[] = 'Wrong username or password';
             }
-
+*/
             if (count($errors) == 0) {
 
                 //logged in
-                $data = $this->user->get_data($username);
+//                $data = $this->user->get_data($username);
 
                 Session::set('logged_in', true);
-                Session::set('user_id', $data->id);
+//                Session::set('user_id', $data->id);
 
                 Url::redirect('/admin');
             }
@@ -64,7 +64,7 @@ class Admin extends BaseController
 
         $this->view->render('admin/auth/login', compact('title', 'errors'));
     }
-
+/*
     public function reset()
     {
         if (Session::get('logged_in')) {
@@ -174,7 +174,7 @@ class Admin extends BaseController
 
         $this->view->render('admin/auth/change_password', compact('title', 'token', 'errors'));
     }
-
+*/
     public function logout()
     {
         Session::destroy();

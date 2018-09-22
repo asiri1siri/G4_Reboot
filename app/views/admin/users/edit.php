@@ -13,34 +13,13 @@ include(APPDIR.'views/layouts/errors.php');
         <div class="col-md-6">
 
             <div class="control-group">
-                <label class="control-label" for="username"> Username</label>
-                <input class="form-control" id="username" type="text" name="username" value="<?=$user->username;?>" required />
+                <label class="control-label" for="ID"> ID</label>
+                <input class="form-control" id="ID" name="ID" value="<?=$user->ID;?>" required />
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="email"> Email</label>
-                <input class="form-control" id="email" type="email" name="email" value="<?=$user->email;?>" required />
-            </div>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <div class="panel panel-primary">
-                <div class="panel-heading">Password, only enter to change the existing password.</div>
-                <div class="panel-body">
-
-                    <div class="control-group">
-                        <label class="control-label" for="password"> Password</label>
-                        <input class="form-control" id="password" type="password" name="password" />
-                    </div>
-
-                    <div class="control-group">
-                        <label class="control-label" for="password_confirm"> Password</label>
-                        <input class="form-control" id="password_confirm" type="password" name="password_confirm" />
-                    </div>
-
-                </div>
+                <label class="control-label" for="NAME"> NAME</label>
+                <input class="form-control" id="NAME" name="NAME" value="<?=$user->NAME;?>" required />
             </div>
 
         </div>

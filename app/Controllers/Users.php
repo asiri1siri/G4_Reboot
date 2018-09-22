@@ -4,6 +4,7 @@ use System\BaseController;
 use App\Helpers\Session;
 use App\Helpers\Url;
 use App\Models\User;
+use App\Models\Comment;
 
 class Users extends BaseController
 {
@@ -23,9 +24,9 @@ class Users extends BaseController
     public function index()
     {
         $users = $this->user->get_users();
-        $title = 'Users';
 
-        $this->view->render('admin/users/index', compact('users', 'title'));
+        $title = 'Users';
+        return $this->view->render('admin/users/index', compact('users', 'title'));
     }
 
     public function add()
@@ -33,39 +34,26 @@ class Users extends BaseController
         $errors = [];
 
         if (isset($_POST['submit'])) {
-            $username            = (isset($_POST['username']) ? $_POST['username'] : null);
-            $email               = (isset($_POST['email']) ? $_POST['email'] : null);
-            $password            = (isset($_POST['password']) ? $_POST['password'] : null);
-            $password_confirm    = (isset($_POST['password_confirm']) ? $_POST['password_confirm'] : null);
+            $ENABLED  = (isset($_POST['ENABLED']) ? $_POST['ENABLED'] : null);
+            $ID = (isset($_POST['ID']) ? $_POST['ID'] : null);
+            $NAME  = (isset($_POST['NAME']) ? $_POST['NAME'] : null);
+            $USERNAME = (isset($_POST['USERNAME']) ? $_POST['USERNAME'] : null);
+            $USERTYPE  = (isset($_POST['USERTYPE']) ? $_POST['USERTYPE'] : null);
+            $EMAIL = (isset($_POST['EMAIL']) ? $_POST['EMAIL'] : null);
 
-            if (strlen($username) < 3) {
-                $errors[] = 'Username is too short';
-            } else {
-                if ($username == $this->user->get_user_username($username)){
-                    $errors[] = 'Username address is already in use';
-                }
-            }
-
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'Please enter a valid email address';
-            } else {
-                if ($email == $this->user->get_user_email($email)){
-                    $errors[] = 'Email address is already in use';
-                }
-            }
-
-            if ($password != $password_confirm) {
-                $errors[] = 'Passwords do not match';
-            } elseif (strlen($password) < 3) {
-                $errors[] = 'Password is too short';
+            if (strlen($NAME) < 3) {
+                $errors[] = 'Name is too short';
             }
 
             if (count($errors) == 0) {
 
                 $data = [
-                    'username' => $username,
-                    'email' => $email,
-                    'password' => password_hash($password, PASSWORD_BCRYPT)
+                    'ENABLED' => $ENABLED,
+                    'ID' => $ID,
+                    'NAME' => $NAME,
+                    'USERNAME' => $USERNAME,
+                    'USERTYPE' => $USERTYPE,
+                    'EMAIL' => $EMAIL,
                 ];
 
                 $this->user->insert($data);
@@ -78,17 +66,16 @@ class Users extends BaseController
 
         }
 
-        $title = 'Add User';
-        $this->view->render('admin/users/add', compact('errors', 'title'));
+        $this->view->render('admin/users/add', compact('errors'));
     }
 
-    public function edit($id)
+    public function edit($ID)
     {
-        if (! is_numeric($id)) {
+        if (! is_numeric($ID)) {
             Url::redirect('/users');
         }
 
-        $user = $this->user->get_user($id);
+        $user = $this->user->get_user($ID);
 
         if ($user == null) {
             Url::redirect('/404');
@@ -97,39 +84,30 @@ class Users extends BaseController
         $errors = [];
 
         if (isset($_POST['submit'])) {
-            $username            = (isset($_POST['username']) ? $_POST['username'] : null);
-            $email               = (isset($_POST['email']) ? $_POST['email'] : null);
-            $password            = (isset($_POST['password']) ? $_POST['password'] : null);
-            $password_confirm    = (isset($_POST['password_confirm']) ? $_POST['password_confirm'] : null);
+            $ENABLED  = (isset($_POST['ENABLED']) ? $_POST['ENABLED'] : null);
+            $ID = (isset($_POST['ID']) ? $_POST['ID'] : null);
+            $NAME  = (isset($_POST['NAME']) ? $_POST['NAME'] : null);
+            $USERNAME = (isset($_POST['USERNAME']) ? $_POST['USERNAME'] : null);
+            $USERTYPE  = (isset($_POST['USERTYPE']) ? $_POST['USERTYPE'] : null);
+            $EMAIL = (isset($_POST['EMAIL']) ? $_POST['EMAIL'] : null);
 
-            if (strlen($username) < 3) {
-                $errors[] = 'Username is too short';
+/*
+            if (strlen($NAME) < 3) {
+                $errors[] = 'Name is too short';
             }
-
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'Please enter a valid email address';
-            }
-
-            if ($password != null) {
-                if ($password != $password_confirm) {
-                    $errors[] = 'Passwords do not match';
-                } elseif (strlen($password) < 3) {
-                    $errors[] = 'Password is too short';
-                }
-            }
-
+*/
             if (count($errors) == 0) {
 
                 $data = [
-                    'username' => $username,
-                    'email' => $email
+                    'ENABLED' => $ENABLED,
+                    'ID' => $ID,
+                    'NAME' => $NAME,
+                    'USERNAME' => $USERNAME,
+                    'USERTYPE' => $USERTYPE,
+                    'EMAIL' => $EMAIL,
                 ];
 
-                if ($password != null) {
-                    $data['password'] = password_hash($password, PASSWORD_BCRYPT);
-                }
-
-                $where = ['id' => $id];
+                $where = ['ID' => $ID];
 
                 $this->user->update($data, $where);
 
@@ -144,26 +122,63 @@ class Users extends BaseController
         $title = 'Edit User';
         $this->view->render('admin/users/edit', compact('user', 'errors', 'title'));
     }
-
-    public function delete($id)
+/*
+    public function view($ID)
     {
-        if (! is_numeric($id)) {
+        if (! is_numeric($ID)) {
             Url::redirect('/users');
         }
 
-        if (Session::get('user_id') == $id) {
-            die('You cannot delete yourself.');
-        }
-
-        $user = $this->user->get_user($id);
+        $user = $this->user->get_user($ID);
 
         if ($user == null) {
             Url::redirect('/404');
         }
 
-        $where = ['id' => $user->id];
+        $comment = new Comment();
 
-        //$this->user->delete($where);
+        if (isset($_POST['submit'])) {
+            $body  = (isset($_POST['body']) ? $_POST['body'] : null);
+
+            if ($comment !='') {
+
+                $data = [
+                    'body' => $body,
+                    'user_id' => $ID,
+                    'user_id' => Session::get('user_id')
+                ];
+
+                $comment->insert($data);
+
+                Session::set('success', 'Comment created');
+
+                Url::redirect("/users/view/$ID");
+
+            }
+
+        }
+
+        $comments = $comment->get_comments($ID);
+
+        $title = 'View User';
+        $this->view->render('admin/users/view', compact('user', 'comments', 'title'));
+    }
+*/
+    public function delete($ID)
+    {
+        if (! is_numeric($ID)) {
+            Url::redirect('/users');
+        }
+
+        $user = $this->user->get_user($ID);
+
+        if ($user == null) {
+            Url::redirect('/404');
+        }
+
+        $where = ['ID' => $user->ID];
+
+        $this->user->delete($where);
 
         Session::set('success', 'User deleted');
 
